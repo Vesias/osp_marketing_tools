@@ -1,0 +1,135 @@
+# OSP Marketing Tools Project Rules & Patterns
+
+## Project Structure
+- All resource files must use -llm.md suffix
+- Resource files must be in src/osp_marketing_tools directory
+- Memory bank files in memory-bank/ directory
+- Follow async/await pattern for all tool implementations
+
+## Code Patterns
+
+### Tool Implementation
+```python
+@mcp.tool()
+async def tool_name() -> dict:
+    """Clear documentation of tool purpose."""
+    try:
+        # Implementation
+        return {
+            "success": True,
+            "data": {
+                "content": content
+            }
+        }
+    except FileNotFoundError:
+        return {
+            "success": False,
+            "error": "Descriptive error message"
+        }
+```
+
+### Resource Loading
+```python
+script_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(script_dir, 'resource-name-llm.md')
+```
+
+## File Naming Conventions
+- Resource files: name-llm.md
+- Python files: snake_case.py
+- Memory bank files: camelCase.md
+- Configuration files: kebab-case.json
+
+## Development Workflow
+1. Read memory bank before starting work
+2. Update activeContext.md for current focus
+3. Document changes in progress.md
+4. Update relevant memory bank files
+
+## Response Formats
+- All tools return dictionary responses
+- Success status must be boolean
+- Error messages must be descriptive
+- Content wrapped in "data" object
+
+## Error Handling
+- Always use try/except blocks
+- Return structured error responses
+- Include descriptive error messages
+- Log errors appropriately
+
+## Documentation Requirements
+- Clear docstrings for all tools
+- Update memory bank for changes
+- Maintain README.md examples
+- Document error scenarios
+
+## Testing Guidelines
+- Test all error paths
+- Verify resource loading
+- Check response formats
+- Validate tool behavior
+
+## Performance Considerations
+- Load resources efficiently
+- Consider caching needs
+- Monitor response times
+- Handle memory usage
+
+## Tool Usage Patterns
+1. Value Map Generation:
+   - Input: Product details and target audience
+   - Output: Structured value map
+   - Focus: Clear value proposition
+
+2. Meta Information:
+   - Input: Content topic and keywords
+   - Output: Optimized metadata
+   - Focus: SEO effectiveness
+
+3. Content Editing:
+   - Input: Technical content
+   - Output: Editing suggestions
+   - Focus: Quality improvement
+
+4. Technical Writing:
+   - Input: Topic and audience
+   - Output: Writing guidance
+   - Focus: Clear communication
+
+5. SEO Optimization:
+   - Input: Content and keywords
+   - Output: Optimization guide
+   - Focus: Search visibility
+
+## Project Intelligence
+
+### Key Paths
+- Resources: src/osp_marketing_tools/*-llm.md
+- Server: src/osp_marketing_tools/server.py
+- Memory: memory-bank/*.md
+- Configuration: claude_desktop_config.json
+
+### Critical Patterns
+- Resource management using file system
+- Async tool implementation
+- Structured error handling
+- Clear documentation
+
+### User Preferences
+- Markdown for documentation
+- Async/await pattern
+- Structured responses
+- Clear error messages
+
+### Known Challenges
+- Resource caching needs
+- Performance optimization
+- Error edge cases
+- Testing coverage
+
+### Quality Standards
+- Clear documentation
+- Proper error handling
+- Consistent response format
+- Resource validation

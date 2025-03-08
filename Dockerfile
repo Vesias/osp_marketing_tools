@@ -10,30 +10,35 @@ ENV UV_COMPILE_BYTECODE=1
 # Specify the UV link mode
 ENV UV_LINK_MODE=copy
 
-# Copy the pyproject.toml file to the working directory
-COPY pyproject.toml /app/
+# Copy project files
+COPY . /app/
 
-# Use uv to install dependencies
-RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-install-project --no-dev --no-editable
-
-# Copy the entire project into the working directory
-ADD . /app
-
-# Use uv to finalize the installation
-RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev --no-editable
+# Use uv to install dependencies and sync project
+RUN uv sync --python-source=/usr/local/bin/python3 --frozen --no-dev
+RUN uv pip install -e .
 
 # Start a new stage to keep the final image small
 FROM python:3.12-slim-bookworm
 
+# Create non-root user
+RUN groupadd -r app && useradd -r -g app app
+
 # Set the working directory
 WORKDIR /app
 
-# Copy the necessary files from the uv stage
-COPY --from=uv /root/.local /root/.local
+# Copy project files and virtual environment
+COPY --from=uv --chown=app:app /app /app
 COPY --from=uv --chown=app:app /app/.venv /app/.venv
 
-# Update the PATH environment variable to include the virtual environment binaries
+# Update permissions
+RUN chown -R app:app /app
+
+# Set environment variables
 ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONPATH="/app:$PYTHONPATH"
+
+# Switch to non-root user
+USER app
 
 # Set the entry point to run the MCP server
-ENTRYPOINT ["python", "src/osp_marketing_tools/server.py"]
+ENTRYPOINT ["python", "-m", "osp_marketing_tools.server"]
